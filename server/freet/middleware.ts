@@ -22,22 +22,35 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
  * Checks if the content of the freet in req.body is valid, i.e not a stream of empty
  * spaces and not more than 140 characters
  */
-const isValidFreetContent = (req: Request, res: Response, next: NextFunction) => {
+ const isValidFreetContent = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.content) {
+    next();
+    return;
+  }
+  
   const {content} = req.body as {content: string};
+  const freet = await FreetCollection.findOne(req.params.freetId);
   if (!content.trim()) {
     res.status(400).json({
       error: 'Freet content must be at least one character long.'
     });
     return;
   }
-
-  if (content.length > 140) {
-    res.status(413).json({
-      error: 'Freet content must be no more than 140 characters.'
-    });
-    return;
+  if (freet !== null && freet.newspost) {
+    if (content.length > 600) {
+      res.status(413).json({
+        error: 'Newspost must be no more than 600 characters.'
+      });
+      return;
+    }
+  } else {
+    if (content.length > 140) {
+      res.status(413).json({
+        error: 'Freet content must be no more than 140 characters.'
+      });
+      return;
+    }
   }
-
   next();
 };
 

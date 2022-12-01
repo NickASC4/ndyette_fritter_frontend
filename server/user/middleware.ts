@@ -122,6 +122,34 @@ const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
+const isContentChangeValid = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await UserCollection.findOneByUserId(req.session.userId);
+
+  if (req.body.recommendedContent) {
+    if (user.recommendedContent >= 10) {
+      res.status(409).json({
+        error: {
+          recommendedContent: 'Recommended content is at its maximum value'
+        }
+      });
+      return;
+    }
+  }
+
+  if (req.body.followingContent) {
+    if (user.followingContent >= 10) {
+      res.status(409).json({
+        error: {
+          followingContent: 'Recommended content is at its maximum value'
+        }
+      });
+      return;
+    }
+  }
+
+  next();
+}
+
 /**
  * Checks if a user with userId as author id in req.query exists
  */
@@ -148,6 +176,7 @@ export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
   isUserLoggedOut,
+  isContentChangeValid,
   isUsernameNotAlreadyInUse,
   isAccountExists,
   isAuthorExists,

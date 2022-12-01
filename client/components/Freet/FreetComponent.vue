@@ -9,6 +9,9 @@
       <h3 class="author">
         @{{ freet.author }}
       </h3>
+      <!-- <FollowButtonComponent
+        :username="author"/> -->
+
       <div
         v-if="$store.state.username === freet.author"
         class="actions"
@@ -65,6 +68,9 @@
 </template>
 
 <script>
+
+import FollowButtonComponent from '@/components/Follow/FollowButtonComponent.vue';
+
 export default {
   name: 'FreetComponent',
   props: {

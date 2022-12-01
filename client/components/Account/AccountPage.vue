@@ -16,6 +16,8 @@
       </header>
       <LogoutForm />
       <DeleteAccountForm />
+      <FollowingContentForm />
+      <RecommendedContentForm />
     </section>
   </main>
 </template>
@@ -24,6 +26,8 @@
 import ChangeUsernameForm from '@/components/Account/ChangeUsernameForm.vue';
 import ChangePasswordForm from '@/components/Account/ChangePasswordForm.vue';
 import DeleteAccountForm from '@/components/Account/DeleteAccountForm.vue';
+import FollowingContentForm from '@/components/Account/FollowingContentForm.vue';
+import RecommendedContentForm from '@/components/Account/RecommendedContentForm.vue';
 import LogoutForm from '@/components/Account/LogoutForm.vue';
 
 export default {
@@ -32,7 +36,19 @@ export default {
     ChangeUsernameForm,
     ChangePasswordForm,
     DeleteAccountForm,
+    RecommendedContentForm,
+    FollowingContentForm,
     LogoutForm
   }
 };
 </script>
+
+
+<style scoped>
+main {
+  background-color: rgb(225, 232, 237);
+}
+template {
+  background-color: rgb(225, 232, 237);
+}
+</style>

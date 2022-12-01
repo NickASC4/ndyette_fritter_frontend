@@ -26,6 +26,12 @@
       >
         Login
       </router-link>
+      <router-link
+        v-if="$store.state.username"
+        to="/community"
+      >
+        Communities
+      </router-link>
     </div>
     <section class="alerts">
       <article
@@ -42,7 +48,7 @@
 <style scoped>
 nav {
     padding: 1vw 2vw;
-    background-color: #ccc;
+    background-color: rgb(29, 161, 242);
     display: flex;
     justify-content: space-between;
     align-items: center;

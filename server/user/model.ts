@@ -1,5 +1,6 @@
 import type {Types} from 'mongoose';
 import {Schema, model} from 'mongoose';
+import type { Community } from '../community/model';
 
 /**
  * This file defines the properties stored in a User
@@ -12,6 +13,9 @@ export type User = {
   username: string;
   password: string;
   dateJoined: Date;
+  followingContent: number;
+  recommendedContent: number;
+  communities: [string];
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -32,7 +36,23 @@ const UserSchema = new Schema({
   dateJoined: {
     type: Date,
     required: true
+  },
+  
+  followingContent: {
+    type: Number,
+    default: 5
+  },
+
+  recommendedContent: {
+    type: Number,
+    default: 5
+  },
+
+  communities: {
+    type: [String],
+    default: []
   }
+
 });
 
 const UserModel = model<User>('User', UserSchema);

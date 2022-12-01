@@ -3,6 +3,7 @@ import express from 'express';
 import FreetCollection from '../freet/collection';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
+import * as communityValidator from '../community/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -122,18 +123,49 @@ router.post(
  *
  * @param {string} username - The user's new username
  * @param {string} password - The user's new password
+ * @param {boolean} recommendedContent - Whether to increment recommended content or not
+ * @param {boolean} followingContent - Whether to increment following content or not
  * @return {UserResponse} - The updated user
  * @throws {403} - If user is not logged in
  * @throws {409} - If username already taken
  * @throws {400} - If username or password are not of the correct format
  */
-router.patch(
+ router.patch(
   '/',
   [
     userValidator.isUserLoggedIn,
     userValidator.isValidUsername,
     userValidator.isUsernameNotAlreadyInUse,
-    userValidator.isValidPassword
+    userValidator.isValidPassword,
+    userValidator.isContentChangeValid
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.updateOne(userId, req.body);
+    res.status(200).json({
+      message: 'Your profile was updated successfully.',
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
+ * Update a user's communities
+ * 
+ * @name PUT /api/users/communities/:id
+ * 
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in
+ * @throws {404} - If the communityId is not valid
+ * @throws {403} - If the user is not part of the community they are trying to leave
+ * @throws {403} - If the user is part of the community they are trying to join
+ */
+ router.put(
+  '/communities/:communityId?',
+  [
+    userValidator.isUserLoggedIn,
+    communityValidator.isCommunityExists,
+    communityValidator.canUserJoinCommunity
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

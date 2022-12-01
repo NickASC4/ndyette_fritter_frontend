@@ -60,14 +60,14 @@ class UserCollection {
     });
   }
 
-  /**
+  /**a
    * Update user's information
    *
    * @param {string} userId - The userId of the user to update
    * @param {Object} userDetails - An object with the user's updated credentials
    * @return {Promise<HydratedDocument<User>>} - The updated user
    */
-  static async updateOne(userId: Types.ObjectId | string, userDetails: {password?: string; username?: string}): Promise<HydratedDocument<User>> {
+   static async updateOne(userId: Types.ObjectId | string, userDetails: any): Promise<HydratedDocument<User>> {
     const user = await UserModel.findOne({_id: userId});
     if (userDetails.password) {
       user.password = userDetails.password;
@@ -75,6 +75,24 @@ class UserCollection {
 
     if (userDetails.username) {
       user.username = userDetails.username;
+    }
+
+    if (userDetails.followingContent) {
+      user.followingContent += 1;
+      user.recommendedContent -= 1;
+    }
+
+    if (userDetails.recommendedContent) {
+      user.followingContent -= 1;
+      user.recommendedContent += 1; 
+    }
+    if (userDetails.id) {
+      if (userDetails.join) {
+        user.communities.push(userDetails.id)
+      } else {
+        const index = user.communities.indexOf(userDetails.id);
+        user.communities.splice(index, 1);
+      }
     }
 
     await user.save();

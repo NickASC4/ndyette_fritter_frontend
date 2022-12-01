@@ -88,6 +88,9 @@ button {
     margin-right: 10px;
 }
 
+main {
+  background-color: rgb(225, 232, 237);
+}
 section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
